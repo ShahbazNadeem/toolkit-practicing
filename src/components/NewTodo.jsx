@@ -57,10 +57,53 @@ const NewTodo = () => {
                 </>
             )}
 
-            {loading && <h3>Loading...</h3>}
+            {loading && <>
+                <div class="three-body">
+                    <div class="three-body__dot"></div>
+                    <div class="three-body__dot"></div>
+                    <div class="three-body__dot"></div>
+                </div></>}
             {error && <h3>Error while fetching users.</h3>}
+            {/*  */}
 
-            <ul>
+            <div className="card mx-auto">
+                <div className="card__title">Users</div>
+                {filteredUsers.map(({ id, name }) => (
+                    <div className="card__data">
+                        <div className="card__right">
+                            <div className="item">{name}</div>
+                        </div>
+                        <div className="card__left">
+                            <div className="item">
+                                <button
+                                    className="btn btn-success me-2"
+                                    onClick={() => {
+                                        setId(id);
+                                        setShowpopup(true);
+                                    }}
+                                >
+                                    View
+                                </button>
+                                <Link to={`/edit/${id}`} className="btn btn-info me-2">
+                                    Edit
+                                </Link>
+                                <button
+                                    className="btn btn-danger"
+                                    onClick={() => dispatch(deleteUser(id))}
+                                >
+                                    Delete
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                ))}
+
+            </div>
+
+
+            {/*  */}
+
+            {/* <ul>
                 {filteredUsers.map(({ id, name }) => (
                     <li
                         key={id}
@@ -87,7 +130,7 @@ const NewTodo = () => {
                         </button>
                     </li>
                 ))}
-            </ul>
+            </ul> */}
 
             {!filteredUsers.length && !loading && (
                 <h5 className="text-center mt-3">

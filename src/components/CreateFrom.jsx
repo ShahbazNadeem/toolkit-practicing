@@ -33,6 +33,14 @@ const CreateFrom = () => {
                     <label className="form-label">Age</label>
                     <input name='age' type="number" className="form-control" onChange={getUserData} />
                 </div>
+                <div className="mb-3">
+                    <label className="form-label">Password</label>
+                    <input name='password' type="text" className="form-control" onChange={getUserData} />
+                </div>
+                <div className="mb-3">
+                    <label className="form-label">Role</label>
+                    <input name='role' type="text" className="form-control" onChange={getUserData} />
+                </div>
                 <div>
                     <div className="mb-3">
                         <input name='gender' className="form-check-input" value="male" type="radio" onChange={getUserData} />

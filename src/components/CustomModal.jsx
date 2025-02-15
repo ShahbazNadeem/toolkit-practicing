@@ -17,6 +17,8 @@ const CustomModal = ({ id, setShowpopup }) => {
                         <h3>Email : {singleUser[0].email}</h3>
                         <h4>Age : {singleUser[0].age}</h4>
                         <p>Gender : {singleUser[0].gender}</p>
+                        <p>Password : {singleUser[0].password}</p>
+                        <p>Role : {singleUser[0].role}</p>
                     </div>
                 ) : (
                     <p>No user found with the given ID.</p>

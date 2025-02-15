@@ -28,7 +28,7 @@ const Update = () => {
     };
     return (
         <form className="w-50 mx-auto" onSubmit={handleUpdate}>
-            {["name", "email", "age"].map((field) => (
+            {["name", "email", "age","role","password"].map((field) => (
                 <div className="mb-3" key={field}>
                     <label className="form-label">
                         {field.charAt(0).toUpperCase() + field.slice(1)}

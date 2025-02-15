@@ -1,40 +1,140 @@
-import React, { useEffect, useState } from 'react'
-import { useDispatch } from 'react-redux'
-import { Link } from 'react-router-dom'
-import { searchUser } from '../redux/userDetailSlice';
+import React, { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import { searchUser } from "../redux/userDetailSlice";
 
 const Navbar = () => {
-    const [searchData, setSearchData] = useState("")
-    const dispatch = useDispatch()
+    const user = JSON.parse(localStorage.getItem("user"));
+    const role = user?.role; // Ensure safe access
+
+    const navigate = useNavigate();
+    const [searchData, setSearchData] = useState("");
+    const dispatch = useDispatch();
+
     useEffect(() => {
         dispatch(searchUser(searchData));
-      }, [searchData]);
+    }, [searchData, dispatch]);
+
+    const handleLogout = (e) => {
+        e.preventDefault();
+        localStorage.removeItem("user");
+        navigate("/login");
+    };
+
     return (
-        <div>
-            <nav className="navbar navbar-expand-lg bg-body-tertiary">
-                <div className="container-fluid">
-                    <Link className="navbar-brand" to="/">Navbar</Link>
-                    <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                        <span className="navbar-toggler-icon" />
-                    </button>
-                    <div className="collapse navbar-collapse" id="navbarSupportedContent">
-                        <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-                            <li className="nav-item">
-                                <Link className="nav-link active" aria-current="page" to="/createpost">Create Post</Link>
-                            </li>
-                            <li className="nav-item">
-                                <Link className="nav-link" to='/read'>All Post</Link>
-                            </li>
-                        </ul>
-                        <div className="d-flex" >
-                            <input className="form-control me-2" type="search" placeholder="Search by Name" onChange={(e) => setSearchData(e.target.value)} />
-                        </div>
+        <nav className="navbar navbar-expand-lg bg-body-tertiary">
+            <div className="container-fluid">
+
+                <button
+                    className="navbar-toggler"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#navbarSupportedContent"
+                    aria-controls="navbarSupportedContent"
+                    aria-expanded="false"
+                    aria-label="Toggle navigation"
+                >
+                    <span className="navbar-toggler-icon" />
+                </button>
+
+                <div className="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul className="navbar-nav me-auto mb-2 mb-lg-0">
+
+                        {/* Admin: Full Access */}
+                        {role === "admin" && (
+                            <>
+                                <Link className="navbar-brand" to="/">Navbar</Link>
+
+                                <li className="nav-item">
+                                    <Link className="nav-link" to="/createpost">Create Post</Link>
+                                </li>
+                                <li className="nav-item">
+                                    <Link className="nav-link" to="/read">All Posts</Link>
+                                </li>
+                                <li className="nav-item">
+                                    <Link className="nav-link" to="/aboutus">About Us</Link>
+                                </li>
+                            </>
+                        )}
+
+                        {/* Manager: Create + Read Access */}
+                        {role === "manager" && (
+                            <>
+                                <li className="nav-item">
+                                    <Link className="nav-link" to="/createpost">Create Post</Link>
+                                </li>
+                                <li className="nav-item">
+                                    <Link className="nav-link" to="/read">All Posts</Link>
+                                </li>
+                            </>
+                        )}
+
+                        {/* User: Only Read Access */}
+                        {role === "user" && (
+                            <>
+                                <li className="nav-item">
+                                    <Link className="nav-link" to="/read">All Posts</Link>
+                                </li>
+                                <li className="nav-item">
+                                    <Link className="nav-link" to="/profile">Profile</Link>
+                                </li>
+                            </>
+                        )}
+
+                        {/* Guest: No Private Routes */}
+                        {role === "guest" && (
+                            <>
+                                <li className="nav-item">
+                                    <Link className="nav-link" to="/aboutus">About Us</Link>
+                                </li>
+                                <li className="nav-item">
+                                    <Link className="nav-link" to="/"></Link>
+                                </li>
+                            </>
+                        )}
+
+                        {/* No user */}
+                        {!user && (
+                            <>
+                                <li className="nav-item">
+                                    <Link className="nav-link" to="/aboutus">About Us</Link>
+                                </li>
+                            </>
+                        )}
+                    </ul>
+
+                    {/* Right Side: Buttons */}
+                    <div className="d-flex gap-3">
+                        {user ? (
+                            <>
+                                {role === "admin" && (
+                                    <button className="btn btn-info">Register User</button>
+                                )}
+                                <button className="signinbutton btn-shine me-1  " onClick={handleLogout}>
+                                    Logout
+                                </button>
+                            </>
+                        ) : (
+                            <>
+                                <button className="btn btn-info">Get Register</button>
+                                <Link to="/login" className="btn btn-success">Log In</Link>
+                            </>
+                        )}
                     </div>
+
+                    {/* Search Bar */}
+                    {/* <div className="d-flex">
+                        <input
+                            className="form-control me-2"
+                            type="search"
+                            placeholder="Search by Name"
+                            onChange={(e) => setSearchData(e.target.value)}
+                        />
+                    </div> */}
                 </div>
-            </nav>
+            </div>
+        </nav>
+    );
+};
 
-        </div>
-    )
-}
-
-export default Navbar
+export default Navbar;
