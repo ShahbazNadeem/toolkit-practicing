@@ -19,7 +19,9 @@ const NewTodo = () => {
 
     const filteredUsers = users
         .filter(({ name }) =>
-            searchData ? name.toLowerCase().includes(searchData.toLowerCase()) : true
+            typeof searchData === "string" && searchData.trim() !== ""
+                ? name.toLowerCase().includes(searchData.toLowerCase())
+                : true
         )
         .filter(({ gender }) =>
             radioData === "all" ? true : gender === radioData
@@ -71,7 +73,7 @@ const NewTodo = () => {
                 {filteredUsers.map(({ id, name }) => (
                     <div className="card__data">
                         <div className="card__right">
-                            <div className="item">{name}</div>
+                            <div className="item"><h4>{name}</h4></div>
                         </div>
                         <div className="card__left">
                             <div className="item">
