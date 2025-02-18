@@ -8,7 +8,7 @@ const Read = () => {
 
   useEffect(() => {
     dispatch(showUser());
-  }, [dispatch]);
+  }, [dispatch])
 
   return (
     <div>
