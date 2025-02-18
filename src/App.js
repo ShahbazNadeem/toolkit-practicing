@@ -8,6 +8,7 @@ import Update from "./components/Update";
 import Aboutus from "./components/Aboutus";
 import Login from "./protectiontab/Login";
 import RoleBasedRoute from "./protectiontab/RoleBasedRoute";
+import SuperAdmin from "./components/SuperAdmin";
 
 function App() {
   const user = JSON.parse(localStorage.getItem("user"));
@@ -16,36 +17,34 @@ function App() {
     <div className="App">
       <BrowserRouter>
         <Navbar />
-        {/* <h1>Learn about Redux Toolkit</h1> */}
         <Routes>
+          {/* Unauthorized Routes */}
+          {!user ? (
+            <Route path="/login" element={<Login />} />
+          ) : (
+            <Route path="/login" element={<Navigate to="/" />} />
+          )}
 
-          {/* Unauthorized routes */}
-          {!user && <Route path="/login" element={<Login />} />}
-          {user && <Route path="/login" element={<Navigate to="/" />} />}
+          {/* Super Admin Routes */}
+          <Route element={<RoleBasedRoute allowedRoles={["superadmin"]} />}>
+            <Route path="/superadmin" element={<SuperAdmin />} />
+          </Route>
 
-          {/* Protected Routes with Role-Based Access */}
-
-
-
-          {/* User Routes */}
-          <Route element={<RoleBasedRoute allowedRoles={["admin", "manager", "user"]} />}>
-            {/* <Route path="/" element={<Read />} /> */}
-            <Route path="/profile" element={<h2>User Profile</h2>} />
-            <Route path="/read" element={<Read />} />
+          {/* Admin + Super Admin Routes */}
+          <Route element={<RoleBasedRoute allowedRoles={["admin", "superadmin"]} />}>
+            <Route path="/" element={<NewTodo />} />
+            <Route path="/edit/:id" element={<Update />} />
           </Route>
 
           {/* Manager Routes */}
-          <Route element={<RoleBasedRoute allowedRoles={["admin", "manager"]} />}>
+          <Route element={<RoleBasedRoute allowedRoles={["admin", "manager", "superadmin"]} />}>
             <Route path="/manage" element={<h2>Manager Dashboard</h2>} />
-            <Route path="/read" element={<Read />} />
             <Route path="/createpost" element={<CreateFrom />} />
           </Route>
 
-          {/* Admin Routes */}
-          <Route element={<RoleBasedRoute allowedRoles={["admin"]} />}>
-            <Route path="/" element={<NewTodo />} />
-            <Route path="/createpost" element={<CreateFrom />} />
-            <Route path="/edit/:id" element={<Update />} />
+          {/* User Routes */}
+          <Route element={<RoleBasedRoute allowedRoles={["admin", "manager", "user", "superadmin"]} />}>
+            <Route path="/profile" element={<h2>User Profile</h2>} />
             <Route path="/read" element={<Read />} />
           </Route>
 
@@ -57,7 +56,7 @@ function App() {
           {/* Unauthorized Page */}
           <Route path="/unauthorized" element={<h2>Access Denied</h2>} />
 
-          {/* Common page */}
+          {/* Common Pages */}
           <Route path="/aboutus" element={<Aboutus />} />
         </Routes>
       </BrowserRouter>

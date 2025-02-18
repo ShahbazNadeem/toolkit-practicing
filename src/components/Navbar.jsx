@@ -140,8 +140,8 @@ const Navbar = () => {
     const role = user?.role;
 
     const handleLogout = () => {
-        dispatch(logout());
         navigate("/login");
+        dispatch(logout());
     };
 
     return (
@@ -150,16 +150,25 @@ const Navbar = () => {
 
                 <div className="collapse navbar-collapse">
                     <ul className="navbar-nav me-auto mb-2 mb-lg-0">
+                        {role === "superadmin" && (
+                            <>
+                                <Link className="navbar-brand" to="/">Navbar</Link>
+                                <li className="nav-item"><Link className="nav-link" to="/createpost">Register new User</Link></li>
+                                <li className="nav-item"><Link className="nav-link" to="/read">All Posts</Link></li>
+                                <li className="nav-item"><Link className="nav-link" to="/superadmin">Super Admin Panel</Link></li>
+                            </>
+                        )}
+
                         {role === "admin" && (
                             <>
                                 <Link className="navbar-brand" to="/">Navbar</Link>
-                                <li className="nav-item"><Link className="nav-link" to="/createpost">Create Post</Link></li>
+                                <li className="nav-item"><Link className="nav-link" to="/createpost">Register new User</Link></li>
                                 <li className="nav-item"><Link className="nav-link" to="/read">All Posts</Link></li>
                             </>
                         )}
                         {role === "manager" && (
                             <>
-                                <li className="nav-item"><Link className="nav-link" to="/createpost">Create Post</Link></li>
+                                <li className="nav-item"><Link className="nav-link" to="/createpost">Register new User</Link></li>
                                 <li className="nav-item"><Link className="nav-link" to="/read">All Posts</Link></li>
                             </>
                         )}
@@ -175,11 +184,12 @@ const Navbar = () => {
                     <div className="d-flex gap-3">
                         {user ? (
                             <>
-                                <button className="btn btn-danger" onClick={handleLogout}>Logout</button>
+                                <button className="btn-shine signinbutton" onClick={handleLogout}>Logout</button>
                             </>
                         ) : (
                             <>
                                 <Link to="/login" className="btn btn-success">Log In</Link>
+                                <Link to="/register" className="btn btn-info">Get Register</Link>
                             </>
                         )}
                     </div>

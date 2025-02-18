@@ -20,8 +20,14 @@ const Login = () => {
 
         if (loginUser.fulfilled.match(result)) {
             const { role } = result.payload;
-            navigate(role === "guest" ? "/aboutus" : role === "admin" ? "/" : "/read");
+            navigate(
+                role === "guest" ? "/aboutus" :
+                role === "admin" ? "/" :
+                role === "superadmin" ? "/superadmin" :
+                "/read"
+            );
         }
+        
     };
 
     return (
