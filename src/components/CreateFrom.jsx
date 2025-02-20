@@ -4,36 +4,20 @@ import { createUser } from '../redux/userDetailSlice';
 import { useNavigate } from 'react-router-dom';
 
 const CreateForm = () => {
-    const company_id = "company_1";
-
     const [users, setUsers] = useState({
-        companyId: company_id,
-        customRole: "",
-        permissions: []
+        userId: "",
+        name: "",
+        email: "",
+        password: "",
+        role: "",
+        companyId:"",
     });
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    const routes = [
-        "home", "registerUser", "ManageUsers",
-        "employeeRecords", "payroll",
-        "teamPerformance", "reports",
-        "dashboard", "profile"
-    ];
-
-    const handleRoleInput = (e) => {
-        setUsers({ ...users, customRole: e.target.value });
-    };
-
-    const handlePermissionChange = (e) => {
-        const { name, checked } = e.target;
-        setUsers(prevUsers => ({
-            ...prevUsers,
-            permissions: checked
-                ? [...prevUsers.permissions, name]
-                : prevUsers.permissions.filter(item => item !== name)
-        }));
+    const handleInputChange = (e) => {
+        setUsers({ ...users, [e.target.name]: e.target.value });
     };
 
     const handleSubmit = (e) => {
@@ -48,53 +32,64 @@ const CreateForm = () => {
             <form className="w-50 mx-auto" onSubmit={handleSubmit}>
                 <div className="mb-3">
                     <label className="form-label">User Id</label>
-                    <input name="userId" type="text" className="form-control" onChange={(e) => setUsers({ ...users, userId: e.target.value })} />
+                    <input
+                        name="userId"
+                        type="text"
+                        className="form-control"
+                        value={users.userId}
+                        onChange={handleInputChange}
+                    />
+                </div>
+                <div className="mb-3">
+                    <label className="form-label">Company Id</label>
+                    <input
+                        name="companyId"
+                        type="text"
+                        className="form-control"
+                        value={users.companyId}
+                        onChange={handleInputChange}
+                    />
                 </div>
                 <div className="mb-3">
                     <label className="form-label">Name</label>
-                    <input name="name" type="text" className="form-control" onChange={(e) => setUsers({ ...users, name: e.target.value })} />
+                    <input
+                        name="name"
+                        type="text"
+                        className="form-control"
+                        value={users.name}
+                        onChange={handleInputChange}
+                    />
                 </div>
                 <div className="mb-3">
                     <label className="form-label">Email address</label>
-                    <input name="email" type="email" className="form-control" onChange={(e) => setUsers({ ...users, email: e.target.value })} />
+                    <input
+                        name="email"
+                        type="email"
+                        className="form-control"
+                        value={users.email}
+                        onChange={handleInputChange}
+                    />
                 </div>
                 <div className="mb-3">
                     <label className="form-label">Password</label>
-                    <input name="password" type="text" className="form-control" onChange={(e) => setUsers({ ...users, password: e.target.value })} />
+                    <input
+                        name="password"
+                        type="password"
+                        className="form-control"
+                        value={users.password}
+                        onChange={handleInputChange}
+                    />
                 </div>
-
-                {/* Custom Role Input */}
                 <div className="mb-3">
                     <label className="form-label fw-bold">Enter Role Name</label>
                     <input
-                        name="customRole"
+                        name="role"
                         type="text"
                         className="form-control"
-                        value={users.customRole}
-                        onChange={handleRoleInput}
+                        value={users.role}
+                        onChange={handleInputChange}
                         placeholder="Type a role..."
                     />
-                </div>
-
-                {/* Permission Checkboxes */}
-                <div className="mb-3">
-                    <label className="form-label fw-bold">Select Permissions for {users.customRole || "Role"}</label>
-                    <div className="ms-3 d-flex flex-row flex-wrap">
-                        {routes.map(route => (
-                            <div key={route} className="form-check ">
-                                <input
-                                    type="checkbox"
-                                    name={route}
-                                    className="form-check-input"
-                                    checked={users.permissions.includes(route)}
-                                    onChange={handlePermissionChange}
-                                />
-                                <label className="form-check-label">
-                                    {route.charAt(0).toUpperCase() + route.slice(1)}
-                                </label>
-                            </div>
-                        ))}
-                    </div>
                 </div>
 
                 <button type="submit" className="btn btn-primary">Submit</button>

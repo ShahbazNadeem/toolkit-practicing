@@ -3,6 +3,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { showUser, deleteUser } from "../redux/userDetailSlice";
 import { Link } from "react-router-dom";
 import CustomModal from "./CustomModal";
+import { fetchCompanyData } from "../redux/companySlice";
+
 
 const NewTodo = () => {
     const dispatch = useDispatch();
@@ -11,7 +13,10 @@ const NewTodo = () => {
     const [showpopup, setShowpopup] = useState(false);
     const [radioData, setRadioData] = useState("all");
 
+    const { company, Loading, Error } = useSelector((state) => state.company);
+
     useEffect(() => {
+        dispatch(fetchCompanyData());
         dispatch(showUser());
     }, [dispatch]);
 
@@ -29,6 +34,21 @@ const NewTodo = () => {
 
     return (
         <div>
+
+            {/*  */}
+            <div>
+                {Loading && <p>Loading company data...</p>}
+                {Error && <p>Error: {Error}</p>}
+                {company && (
+                    <div>
+                        <h2>Company Name: {company.companyName}</h2>
+                        <p>Company ID: {company.companyId}</p>
+                    </div>
+                )}
+            </div>
+            {/*  */}
+
+
             {showpopup && (
                 <CustomModal id={id} showpopup={showpopup} setShowpopup={setShowpopup} />
             )}

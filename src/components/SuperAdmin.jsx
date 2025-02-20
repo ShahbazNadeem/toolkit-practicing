@@ -2,7 +2,7 @@ import React, { useState } from "react";
 
 const SuperAdmin = () => {
     const [users, setUsers] = useState({
-        id: "company_2",
+        companyId: "",
         companyName: "",
         email: "",
         navitems: {},
@@ -99,7 +99,7 @@ const SuperAdmin = () => {
 
                 // Reset form after submission
                 setUsers({
-                    id: "company_2",
+                    companyId: "",
                     companyName: "",
                     email: "",
                     navitems: {}
@@ -118,6 +118,16 @@ const SuperAdmin = () => {
         <div>
             <h2>Add new Company</h2>
             <form className="w-50 mx-auto" onSubmit={handleSubmit}>
+                <div className="mb-3">
+                    <label className="form-label">Company Id</label>
+                    <input
+                        name="companyId"
+                        type="text"
+                        className="form-control"
+                        value={users.companyId}
+                        onChange={getUserData} // Allow user input
+                    />
+                </div>
                 <div className="mb-3">
                     <label className="form-label">Company Name</label>
                     <input
