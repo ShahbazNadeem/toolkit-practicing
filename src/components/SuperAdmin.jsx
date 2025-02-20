@@ -1,45 +1,79 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom"; // Import Link for routing
 
 const SuperAdmin = () => {
     const [users, setUsers] = useState({
+        id: "company_2",
         companyName: "",
         email: "",
-        navitems: [] // Array of objects { name: "", link: "" }
+        navitems: {},
     });
 
-    const [customCheckboxes, setCustomCheckboxes] = useState([]); // Stores dynamically added checkboxes
-    const [newCheckbox, setNewCheckbox] = useState(""); // New feature name input
-    const [newLink, setNewLink] = useState(""); // New feature link input
+    const roles = {
+        admin: [
+            { name: "Home", link: "/home" },
+            { name: "Add User", link: "/add-user" },
+            { name: "Manage Users", link: "/manage-users" },
+            { name: "Reports", link: "/reports" }
+        ],
+        hr: [
+            { name: "Dashboard", link: "/dashboard" },
+            { name: "Recruitment", link: "/recruitment" },
+            { name: "Payroll", link: "/payroll" },
+            { name: "Employee Management", link: "/employees" }
+        ],
+        manager: [
+            { name: "Overview", link: "/overview" },
+            { name: "Tasks", link: "/tasks" },
+            { name: "Reports", link: "/reports" },
+            { name: "Team Management", link: "/team" }
+        ],
+        user: [
+            { name: "Tasks", link: "/tasks" },
+            { name: "Profile", link: "/profile" }
+        ]
+    };
 
     const getUserData = (e) => {
         const { name, value, type, checked, dataset } = e.target;
 
         if (type === "checkbox") {
-            setUsers((prevUsers) => ({
-                ...prevUsers,
-                navitems: checked
-                    ? [...prevUsers.navitems, { name, link: dataset.link }] // Add if checked
-                    : prevUsers.navitems.filter(item => item.name !== name) // Remove if unchecked
-            }));
+            if (dataset.parent) {
+                // Handling sub-checkbox (nav item under a role)
+                setUsers((prevUsers) => {
+                    const parentRole = dataset.parent;
+                    const selectedNavItem = roles[parentRole].find(item => item.name === name);
+
+                    return {
+                        ...prevUsers,
+                        navitems: {
+                            ...prevUsers.navitems,
+                            [parentRole]: checked
+                                ? [...(prevUsers.navitems[parentRole] || []), selectedNavItem]
+                                : prevUsers.navitems[parentRole]?.filter(item => item.name !== name) || []
+                        }
+                    };
+                });
+            } else {
+                // Handling main role checkbox
+                setUsers((prevUsers) => {
+                    const updatedNavItems = { ...prevUsers.navitems };
+
+                    if (checked) {
+                        updatedNavItems[name] = roles[name] || []; // Initialize with all sub-items
+                    } else {
+                        delete updatedNavItems[name]; // Remove role if unchecked
+                    }
+
+                    return { ...prevUsers, navitems: updatedNavItems };
+                });
+            }
         } else {
+            // Handling text inputs
             setUsers((prevUsers) => ({
                 ...prevUsers,
                 [name]: value
             }));
         }
-    };
-
-    const handleAddCheckbox = () => {
-        if (newCheckbox.trim() === "" || newLink.trim() === "") return; // Prevent empty values
-
-        const newFeature = { name: newCheckbox, link: newLink };
-
-        if (!customCheckboxes.find(item => item.name === newCheckbox)) {
-            setCustomCheckboxes([...customCheckboxes, newFeature]); // Add new feature
-        }
-        setNewCheckbox("");
-        setNewLink("");
     };
 
     const handleSubmit = async (e) => {
@@ -48,7 +82,7 @@ const SuperAdmin = () => {
 
         try {
             const response = await fetch(
-                "https://67b44113392f4aa94faa0586.mockapi.io/NavbarList",
+                "https://67b44113392f4aa94faa0586.mockapi.io/Navitems",
                 {
                     method: "POST",
                     headers: {
@@ -61,14 +95,15 @@ const SuperAdmin = () => {
             if (response.ok) {
                 const data = await response.json();
                 console.log("Successfully saved:", data);
-                // alert("Data saved successfully!");
+                alert("Data saved successfully!");
 
+                // Reset form after submission
                 setUsers({
+                    id: "company_2",
                     companyName: "",
                     email: "",
-                    navitems: []
+                    navitems: {}
                 });
-                setCustomCheckboxes([]); // Reset dynamically added checkboxes
             } else {
                 console.error("Failed to save data");
                 alert("Failed to save data");
@@ -104,82 +139,49 @@ const SuperAdmin = () => {
                     />
                 </div>
 
-                {/* Dynamic Checkbox Input */}
-                <div className="mb-3">
-                    <label className="form-label">Add a New Feature</label>
-                    <input
-                        type="text"
-                        className="form-control"
-                        placeholder="Enter Feature Name"
-                        value={newCheckbox}
-                        onChange={(e) => setNewCheckbox(e.target.value)}
-                    />
-                    <input
-                        type="text"
-                        className="form-control mt-2"
-                        placeholder="Enter Feature Link (e.g., /dashboard)"
-                        value={newLink}
-                        onChange={(e) => setNewLink(e.target.value)}
-                    />
-                    <button type="button" className="btn btn-secondary mt-2" onClick={handleAddCheckbox}>
-                        Add New Feature
-                    </button>
-                </div>
-
-                {/* Predefined Checkboxes */}
+                {/* Role Checkboxes */}
                 <div>
-                    {[
-                        { name: "Home", link: "/" },
-                        { name: "Register New User", link: "/register" },
-                        { name: "All Post", link: "/posts" }
-                    ].map((item) => (
-                        <div className="form-check" key={item.name}>
-                            <input
-                                className="form-check-input"
-                                type="checkbox"
-                                name={item.name}
-                                data-link={item.link}
-                                checked={users.navitems.some(nav => nav.name === item.name)}
-                                onChange={getUserData}
-                            />
-                            <label className="form-check-label">{item.name}</label>
+                    {Object.keys(roles).map((role) => (
+                        <div key={role} className="mb-2">
+                            <div className="form-check">
+                                <input
+                                    className="form-check-input"
+                                    type="checkbox"
+                                    name={role}
+                                    checked={users.navitems.hasOwnProperty(role)}
+                                    onChange={getUserData}
+                                />
+                                <label className="form-check-label fw-bold">{role.toUpperCase()}</label>
+                            </div>
+
+                            {/* Nested checkboxes for selected roles */}
+                            {users.navitems.hasOwnProperty(role) && (
+                                <div className="ms-4">
+                                    {roles[role].map((item) => (
+                                        <div key={item.name} className="form-check">
+                                            <input
+                                                className="form-check-input"
+                                                type="checkbox"
+                                                name={item.name}
+                                                data-parent={role}
+                                                checked={users.navitems[role]?.some(nav => nav.name === item.name)}
+                                                onChange={getUserData}
+                                            />
+                                            <label className="form-check-label">
+                                                {item.name} <span className="text-muted">({item.link})</span>
+                                            </label>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
                         </div>
                     ))}
                 </div>
-
-                {/* Dynamically Added Checkboxes */}
-                {customCheckboxes.map((item, index) => (
-                    <div className="form-check" key={index}>
-                        <input
-                            className="form-check-input"
-                            type="checkbox"
-                            name={item.name}
-                            data-link={item.link}
-                            checked={users.navitems.some(nav => nav.name === item.name)}
-                            onChange={getUserData}
-                        />
-                        <label className="form-check-label">{item.name} ({item.link})</label>
-                    </div>
-                ))}
 
                 <button type="submit" className="btn btn-primary mt-3">
                     Submit
                 </button>
             </form>
-
-            {/* Navigation Bar Preview */}
-            <nav className="mt-5">
-                <h3>Navigation Bar</h3>
-                <ul className="nav nav-pills">
-                    {users.navitems.map((item, index) => (
-                        <li className="nav-item" key={index}>
-                            <Link className="nav-link" to={item.link}>
-                                {item.name}
-                            </Link>
-                        </li>
-                    ))}
-                </ul>
-            </nav>
         </div>
     );
 };

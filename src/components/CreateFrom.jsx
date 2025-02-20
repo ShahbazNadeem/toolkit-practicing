@@ -1,66 +1,106 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { createUser } from '../redux/userDetailSlice';
 import { useNavigate } from 'react-router-dom';
 
-const CreateFrom = () => {
-    const [users, setUsers] = useState({})
+const CreateForm = () => {
+    const company_id = "company_1";
 
-    const dispatch = useDispatch()
-    const navigate = useNavigate()
+    const [users, setUsers] = useState({
+        companyId: company_id,
+        customRole: "",
+        permissions: []
+    });
 
-    const getUserData = (e) => {
-        setUsers({ ...users, [e.target.name]: e.target.value })
-    }
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
+    const routes = [
+        "home", "registerUser", "ManageUsers",
+        "employeeRecords", "payroll",
+        "teamPerformance", "reports",
+        "dashboard", "profile"
+    ];
+
+    const handleRoleInput = (e) => {
+        setUsers({ ...users, customRole: e.target.value });
+    };
+
+    const handlePermissionChange = (e) => {
+        const { name, checked } = e.target;
+        setUsers(prevUsers => ({
+            ...prevUsers,
+            permissions: checked
+                ? [...prevUsers.permissions, name]
+                : prevUsers.permissions.filter(item => item !== name)
+        }));
+    };
+
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log(users, "users....")
+        console.log(users, "users....");
         dispatch(createUser(users));
-        navigate("/")
-    }
+        navigate("/");
+    };
+
     return (
         <div>
-            <form className='w-50 mx-auto' onSubmit={handleSubmit}>
+            <form className="w-50 mx-auto" onSubmit={handleSubmit}>
+                <div className="mb-3">
+                    <label className="form-label">User Id</label>
+                    <input name="userId" type="text" className="form-control" onChange={(e) => setUsers({ ...users, userId: e.target.value })} />
+                </div>
                 <div className="mb-3">
                     <label className="form-label">Name</label>
-                    <input name='name' type="text" className="form-control" onChange={getUserData} />
+                    <input name="name" type="text" className="form-control" onChange={(e) => setUsers({ ...users, name: e.target.value })} />
                 </div>
                 <div className="mb-3">
                     <label className="form-label">Email address</label>
-                    <input name='email' type="email" className="form-control" onChange={getUserData} />
-                </div>
-                <div className="mb-3">
-                    <label className="form-label">Age</label>
-                    <input name='age' type="number" className="form-control" onChange={getUserData} />
+                    <input name="email" type="email" className="form-control" onChange={(e) => setUsers({ ...users, email: e.target.value })} />
                 </div>
                 <div className="mb-3">
                     <label className="form-label">Password</label>
-                    <input name='password' type="text" className="form-control" onChange={getUserData} />
+                    <input name="password" type="text" className="form-control" onChange={(e) => setUsers({ ...users, password: e.target.value })} />
                 </div>
+
+                {/* Custom Role Input */}
                 <div className="mb-3">
-                    <label className="form-label">Role</label>
-                    <input name='role' type="text" className="form-control" onChange={getUserData} />
+                    <label className="form-label fw-bold">Enter Role Name</label>
+                    <input
+                        name="customRole"
+                        type="text"
+                        className="form-control"
+                        value={users.customRole}
+                        onChange={handleRoleInput}
+                        placeholder="Type a role..."
+                    />
                 </div>
-                <div>
-                    <div className="mb-3">
-                        <input name='gender' className="form-check-input" value="male" type="radio" onChange={getUserData} />
-                        <label className="form-check-label" >
-                            Male
-                        </label>
-                    </div>
-                    <div className="mb-3">
-                        <input name='gender' className="form-check-input" value="female" type="radio" onChange={getUserData} />
-                        <label className="form-check-label" >
-                            Femail
-                        </label>
+
+                {/* Permission Checkboxes */}
+                <div className="mb-3">
+                    <label className="form-label fw-bold">Select Permissions for {users.customRole || "Role"}</label>
+                    <div className="ms-3 d-flex flex-row flex-wrap">
+                        {routes.map(route => (
+                            <div key={route} className="form-check ">
+                                <input
+                                    type="checkbox"
+                                    name={route}
+                                    className="form-check-input"
+                                    checked={users.permissions.includes(route)}
+                                    onChange={handlePermissionChange}
+                                />
+                                <label className="form-check-label">
+                                    {route.charAt(0).toUpperCase() + route.slice(1)}
+                                </label>
+                            </div>
+                        ))}
                     </div>
                 </div>
 
                 <button type="submit" className="btn btn-primary">Submit</button>
             </form>
-
         </div>
-    )
-}
+    );
+};
 
-export default CreateFrom
+export default CreateForm;

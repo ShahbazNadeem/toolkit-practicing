@@ -5,7 +5,7 @@ export const createUser = createAsyncThunk(
   "userDetail/createUser",
   async (data, { rejectWithValue }) => {
     try {
-      const response = await fetch("https://678a3b38dd587da7ac294985.mockapi.io/crud", {
+      const response = await fetch("https://678a3b38dd587da7ac294985.mockapi.io/users", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
