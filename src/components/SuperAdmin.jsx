@@ -38,7 +38,6 @@ const SuperAdmin = () => {
 
         if (type === "checkbox") {
             if (dataset.parent) {
-                // Handling sub-checkbox (nav item under a role)
                 setUsers((prevUsers) => {
                     const parentRole = dataset.parent;
                     const selectedNavItem = roles[parentRole].find(item => item.name === name);
@@ -54,21 +53,19 @@ const SuperAdmin = () => {
                     };
                 });
             } else {
-                // Handling main role checkbox
                 setUsers((prevUsers) => {
                     const updatedNavItems = { ...prevUsers.navitems };
 
                     if (checked) {
-                        updatedNavItems[name] = roles[name] || []; // Initialize with all sub-items
+                        updatedNavItems[name] = roles[name] || [];
                     } else {
-                        delete updatedNavItems[name]; // Remove role if unchecked
+                        delete updatedNavItems[name];
                     }
 
                     return { ...prevUsers, navitems: updatedNavItems };
                 });
             }
         } else {
-            // Handling text inputs
             setUsers((prevUsers) => ({
                 ...prevUsers,
                 [name]: value
@@ -116,7 +113,7 @@ const SuperAdmin = () => {
 
     return (
         <div>
-            <h2>Add new Company</h2>
+            <h2 className="my-5">Register new Company</h2>
             <form className="w-50 mx-auto" onSubmit={handleSubmit}>
                 <div className="mb-3">
                     <label className="form-label">Company Id</label>
@@ -125,7 +122,8 @@ const SuperAdmin = () => {
                         type="text"
                         className="form-control"
                         value={users.companyId}
-                        onChange={getUserData} // Allow user input
+                        onChange={getUserData}
+                        placeholder="Enter Compan's Id"
                     />
                 </div>
                 <div className="mb-3">
@@ -136,6 +134,7 @@ const SuperAdmin = () => {
                         className="form-control"
                         value={users.companyName}
                         onChange={getUserData}
+                        placeholder="Enter Company's Name"
                     />
                 </div>
                 <div className="mb-3">
@@ -146,13 +145,13 @@ const SuperAdmin = () => {
                         className="form-control"
                         value={users.email}
                         onChange={getUserData}
+                        placeholder="Enter Company's Email"
                     />
                 </div>
 
-                {/* Role Checkboxes */}
-                <div>
+                <div className=" d-flex flex-wrap gap-3">
                     {Object.keys(roles).map((role) => (
-                        <div key={role} className="mb-2">
+                        <div key={role} className="d-flex">
                             <div className="form-check">
                                 <input
                                     className="form-check-input"

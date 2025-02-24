@@ -29,7 +29,7 @@ export const showUser = createAsyncThunk(
   "userDetail/showUser",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await fetch("https://678a3b38dd587da7ac294985.mockapi.io/crud");
+      const response = await fetch("https://678a3b38dd587da7ac294985.mockapi.io/users");
 
       if (!response.ok) {
         throw new Error("Failed to fetch users");

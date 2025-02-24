@@ -36,7 +36,7 @@ const NewTodo = () => {
         <div>
 
             {/*  */}
-            <div>
+            {/* <div>
                 {Loading && <p>Loading company data...</p>}
                 {Error && <p>Error: {Error}</p>}
                 {company && (
@@ -45,14 +45,14 @@ const NewTodo = () => {
                         <p>Company ID: {company.companyId}</p>
                     </div>
                 )}
-            </div>
+            </div> */}
             {/*  */}
 
 
             {showpopup && (
                 <CustomModal id={id} showpopup={showpopup} setShowpopup={setShowpopup} />
             )}
-            <h2>Fetch Data</h2>
+            <h2 className="neon">Fetch Data</h2>
 
             {users.length > 0 && (
                 <>

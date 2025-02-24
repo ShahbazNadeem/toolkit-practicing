@@ -10,7 +10,7 @@ export const loginUser = createAsyncThunk("auth/loginUser", async ({ email, pass
         const user = data.find((u) => u.email === email && u.password === password);
         if (!user) return rejectWithValue("Invalid email or password");
 
-        const userData = { name: user.name, email: user.email, role: user.role, companyId: user.companyId };
+        const userData = { name: user.name, email: user.email, role: user.customRole, companyId: user.companyId, permissions: user.permissions };
         localStorage.setItem("user", JSON.stringify(userData));
 
         return userData;

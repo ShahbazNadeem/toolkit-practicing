@@ -7,8 +7,9 @@ import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import Update from "./components/Update";
 import Aboutus from "./components/Aboutus";
 import Login from "./protectiontab/Login";
-import RoleBasedRoute from "./protectiontab/RoleBasedRoute";
+import ProtectedRoute from "./protectiontab/ProtectedRoute";
 import SuperAdmin from "./components/SuperAdmin";
+import DynamicNavbar from "./components/DynamicNavbar";
 
 function App() {
   const user = JSON.parse(localStorage.getItem("user"));
@@ -17,6 +18,8 @@ function App() {
     <div className="App">
       <BrowserRouter>
         <Navbar />
+        <DynamicNavbar />
+
         <Routes>
           {/* Unauthorized Routes */}
           {!user ? (
@@ -26,35 +29,41 @@ function App() {
           )}
 
           {/* Super Admin Routes */}
-          <Route element={<RoleBasedRoute allowedRoles={["superadmin"]} />}>
+          <Route element={<ProtectedRoute requiredPermission="dashboard" />}>
             <Route path="/superadmin" element={<SuperAdmin />} />
           </Route>
 
           {/* Admin + Super Admin Routes */}
-          <Route element={<RoleBasedRoute allowedRoles={["admin", "superadmin"]} />}>
+          <Route element={<ProtectedRoute requiredPermission="home" />}>
             <Route path="/" element={<NewTodo />} />
+          </Route>
+
+          <Route element={<ProtectedRoute requiredPermission="registerUser" />}>
             <Route path="/edit/:id" element={<Update />} />
           </Route>
 
           {/* Manager Routes */}
-          <Route element={<RoleBasedRoute allowedRoles={["admin", "manager", "superadmin"]} />}>
+          <Route element={<ProtectedRoute requiredPermission="ManageUsers" />}>
             <Route path="/manage" element={<h2>Manager Dashboard</h2>} />
+          </Route>
+
+          <Route element={<ProtectedRoute requiredPermission="employeeRecords" />}>
             <Route path="/createpost" element={<CreateFrom />} />
           </Route>
 
           {/* User Routes */}
-          <Route element={<RoleBasedRoute allowedRoles={["admin", "manager", "user", "superadmin"]} />}>
+          <Route element={<ProtectedRoute requiredPermission="profile" />}>
             <Route path="/profile" element={<h2>User Profile</h2>} />
-            <Route path="/read" element={<Read />} />
           </Route>
 
-          {/* Guest Routes */}
-          <Route element={<RoleBasedRoute allowedRoles={["guest"]} />}>
-            <Route path="/" element={<h2>Welcome, Guest!</h2>} />
+          <Route element={<ProtectedRoute requiredPermission="reports" />}>
+            <Route path="/read" element={<Read />} />
           </Route>
 
           {/* Unauthorized Page */}
           <Route path="/unauthorized" element={<h2>Access Denied</h2>} />
+          
+          <Route path="*" element={<h2>Not a valid url</h2>} />
 
           {/* Common Pages */}
           <Route path="/aboutus" element={<Aboutus />} />

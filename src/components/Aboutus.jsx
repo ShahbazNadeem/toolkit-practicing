@@ -23,17 +23,17 @@ const Aboutus = () => {
     <>
       <h1>About Us</h1>
 
-      {loading && <p>Loading company data...</p>}
-      {error && <p>Error: {error}</p>}
+      {/* {loading && <p>Loading company data...</p>} */}
+      {/* {error && <p>Error: {error}</p>} */}
 
-      {company && (
+      {/* {company && (
         <div>
           <h2>Company Name: {company.companyName}</h2>
           <p>Company ID: {company.companyId}</p>
-          <p>Email: {company.email}</p>
+          <p>Email: {company.email}</p> */}
 
           {/* Display only navitems that match the user's role */}
-          {company.navitems && userRole && company.navitems[userRole] ? (
+          {/* {company.navitems && userRole && company.navitems[userRole] ? (
             <div>
               <h3>Navigation Items for {userRole.toUpperCase()}:</h3>
               <ul>
@@ -48,7 +48,7 @@ const Aboutus = () => {
             <p>No navigation items available for your role.</p>
           )}
         </div>
-      )}
+      )} */}
     </>
   );
 };
